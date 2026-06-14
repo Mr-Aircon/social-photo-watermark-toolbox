@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大家方便使用的工具箱 - 图片加水印与裁剪工具</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            background-color: #f8f9fa; 
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 60px 20px;
+        }
+        header {
+            max-width: 1200px;
+            margin: 0 auto 48px auto;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 24px;
+        }
+        .brand-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #1a1a1a;
+        }
+        .brand-subtitle {
+            font-size: 13px;
+            color: #757575;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        
+        .workspace-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start; 
+            flex-wrap: wrap; 
+        }
+        
+        .control-panel { 
+            flex: 1;
+            min-width: 340px;
+            background: #ffffff; 
+            padding: 32px; 
+            border: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .preview-panel {
+            flex: 1.4;
+            min-width: 380px;
+            background: #ffffff;
+            padding: 32px;
+            border: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .preview-header {
+            width: 100%;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        .preview-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .form-item { 
+            margin-bottom: 24px; 
+        }
+        .form-label { 
+            display: block; 
+            margin-bottom: 8px;
+            font-weight: 600; 
+            font-size: 13px;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        input[type="file"], select {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #ccc;
+            background-color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            color: #1a1a1a;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        input[type="file"] {
+            padding-top: 8px;
+        }
+        input[type="file"]:focus, select:focus {
+            border-color: #136163;
+            box-shadow: 0 0 0 3px rgba(19, 97, 99, 0.15);
+        }
+        .value-indicator {
+            float: right;
+            font-weight: 400;
+            color: #757575;
+            font-size: 12px;
+        }
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            height: 40px;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 2px;
+            background: #e5e5e5;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #136163; 
+            border: 1px solid #136163;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        #downloadBtn { 
+            width: 100%;
+            height: 48px;
+            font-size: 14px; 
+            background-color: #136163; 
+            color: #ffffff; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s ease;
+        }
+        #downloadBtn:hover { 
+            background-color: #0f4a4c; 
+        }
+        #downloadBtn:active {
+            background-color: #0b3435;
+        }
+        .canvas-wrapper {
+            border: 1px solid #e5e5e5;
+            background-color: #fafafa;
+            padding: 1px; 
+        }
+
+        /* ☕ Ko-fi 极简赞助区域（修复版） */
+        .sponsor-container {
+            border-top: 1px dashed #e5e5e5;
+            padding-top: 20px;
+            margin-top: 32px; /* 强行固定间距，防止飞出可见区域 */
+        }
+        .sponsor-text {
+            font-size: 12px;
+            color: #757575;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .sponsor-link {
+            display: inline-flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #136163;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .sponsor-link:hover {
+            border-color: #136163;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-title">大家方便使用的社媒工具箱</div>
+        <div class="brand-subtitle">IMAGE WATERMARK & CROPPER CONTROLLER / 图像高效处理组件</div>
+    </header>
+
+    <div class="workspace-layout">
+        <div class="control-panel">
+            <div class="form-container">
+                <div class="form-item">
+                    <label class="form-label">1. 上传你的照片</label>
+                    <input type="file" id="bgInput" accept="image/*">
+                </div>
+                
+                <div class="form-item">
+                    <label class="form-label">2. 上传透明水印 (PNG)</label>
+                    <input type="file" id="wmInput" accept="image/*">
+                </div>
+
+                <div class="form-item">
+                    <label class="form-label">3. 选择社交平台尺寸</label>
+                    <select id="sizeSelect">
+                        <option value="3:4">小红书 官方最佳纵向比例 (1242 x 1656 px)</option>
+                        <option value="1:1">Instagram 正方形比例 (1080 x 1080 px)</option>
+                        <option value="4:5">Instagram 纵向缩略图 (1080 x 1350 px)</option>
+                        <option value="16:9">视频横版 / 常规封面 (1920 x 1080 px)</option>
+                    </select>
+                </div>
+
+                <div class="form-item">
+                    <label class="form-label">4. 水印不透明度 <span class="value-indicator" id="opacityValue">1.0</span></label>
+                    <div class="slider-wrapper">
+                        <input type="range" id="opacitySlider" min="0" max="1" step="0.1" value="1">
+                    </div>
+                </div>
+
+                <div class="form-item">
+                    <label class="form-label">5. 水印快捷位置</label>
+                    <select id="positionSelect">
+                        <option value="">鼠标任意拖拽</option>
+                        <option value="bottom-right">靠右下角对齐</option>
+                        <option value="center">放正中间</option>
+                        <option value="top-left">靠左上角对齐</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="downloadBtn">导出高清图片</button>
+
+            <div class="sponsor-container">
+                <p class="sponsor-text">
+                    本工具完全在你的电脑本地运行。如果它帮到了你，欢迎支持一下创作者。
+                </p>
+                <a href="https://ko-fi.com/airconaircon" target="_blank" class="sponsor-link">
+                    请作者喝杯咖啡 SUPPORT THE DEVELOPER →
+                </a>
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview-header">
+                <div class="preview-title">效果预览区域</div>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas id="mainCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
